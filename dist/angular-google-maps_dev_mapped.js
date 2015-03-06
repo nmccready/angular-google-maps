@@ -2614,8 +2614,11 @@ Nicholas McCready - https://twitter.com/nmccready
                 if (_this.gObject != null) {
                   _this.clean();
                 }
+                if (scope.model != null) {
+                  maybeCachedEval = scope;
+                }
                 if (pathPoints.length > 0) {
-                  _this.gObject = gFactory(_this.buildOpts(pathPoints, maybeCachedEval = scope.model));
+                  _this.gObject = gFactory(_this.buildOpts(pathPoints, maybeCachedEval));
                 }
                 if (_this.gObject) {
                   if (_this.scope.fit) {
