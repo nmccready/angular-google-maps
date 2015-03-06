@@ -4514,7 +4514,7 @@ Original idea from: http://stackoverflow.com/questions/22758950/google-map-drawi
         PolygonsParentModel.prototype.watchModels = function(scope) {
           return scope.$watchCollection('models', (function(_this) {
             return function(newValue, oldValue) {
-              if (newValue === oldValue) {
+              if (newValue !== oldValue) {
                 if (_this.doINeedToWipe(newValue) || scope.doRebuildAll) {
                   return _this.rebuildAll(scope, true, true);
                 } else {
