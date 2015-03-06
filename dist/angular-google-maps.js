@@ -1,4 +1,4 @@
-/*! angular-google-maps 2.1.0-X.0 2015-02-27
+/*! angular-google-maps 2.1.0-X.0 2015-03-06
  *  AngularJS directives for Google Maps
  *  git: https://github.com/angular-ui/angular-google-maps.git
  */
@@ -104,7 +104,7 @@ Nicholas McCready - https://twitter.com/nmccready
             window[randomizedFunctionName] = null;
             deferred.resolve(window.google.maps);
           };
-          if (window.navigator.connection && window.navigator.connection.type === window.Connection.NONE) {
+          if (window.navigator.connection && window.Connection && window.navigator.connection.type === window.Connection.NONE) {
             document.addEventListener('online', function() {
               if (!isGoogleMapsLoaded()) {
                 return includeScript(options);
@@ -2323,7 +2323,7 @@ Nicholas McCready - https://twitter.com/nmccready
         function CommonOptionsBuilder() {
           this.watchProps = __bind(this.watchProps, this);
           this.buildOpts = __bind(this.buildOpts, this);
-          this.hasModel = _(this.scope).chain().keys().contains('model').value();
+          return CommonOptionsBuilder.__super__.constructor.apply(this, arguments);
         }
 
         CommonOptionsBuilder.prototype.props = [
@@ -2333,7 +2333,15 @@ Nicholas McCready - https://twitter.com/nmccready
           }
         ];
 
-        CommonOptionsBuilder.prototype.buildOpts = function(customOpts, forEachOpts) {
+        CommonOptionsBuilder.prototype.getCorrectModel = function(scope) {
+          if (angular.isDefined(scope != null ? scope.model : void 0)) {
+            return scope.model;
+          } else {
+            return scope;
+          }
+        };
+
+        CommonOptionsBuilder.prototype.buildOpts = function(customOpts, cachedEval, forEachOpts) {
           var model, opts, stroke;
           if (customOpts == null) {
             customOpts = {};
@@ -2349,7 +2357,7 @@ Nicholas McCready - https://twitter.com/nmccready
             $log.error('this.map not defined in CommonOptionsBuilder can not buildOpts');
             return;
           }
-          model = this.hasModel ? this.scope.model : this.scope;
+          model = this.getCorrectModel(this.scope);
           stroke = this.scopeOrModelVal('stroke', this.scope, model);
           opts = angular.extend(customOpts, this.DEFAULTS, {
             map: this.map,
@@ -2369,7 +2377,7 @@ Nicholas McCready - https://twitter.com/nmccready
           }), (function(_this) {
             return function(defaultValue, key) {
               var val;
-              val = _this.scopeOrModelVal(key, _this.scope, model);
+              val = cachedEval ? cachedEval[key](_this.scopeOrModelVal(key, _this.scope, model)) : void 0;
               if (angular.isUndefined(val)) {
                 return opts[key] = defaultValue;
               } else {
@@ -2421,10 +2429,10 @@ Nicholas McCready - https://twitter.com/nmccready
           return PolylineOptionsBuilder.__super__.constructor.apply(this, arguments);
         }
 
-        PolylineOptionsBuilder.prototype.buildOpts = function(pathPoints) {
+        PolylineOptionsBuilder.prototype.buildOpts = function(pathPoints, cachedEval) {
           return PolylineOptionsBuilder.__super__.buildOpts.call(this, {
             path: pathPoints
-          }, {
+          }, cachedEval, {
             geodesic: false
           });
         };
@@ -2443,15 +2451,15 @@ Nicholas McCready - https://twitter.com/nmccready
           return ShapeOptionsBuilder.__super__.constructor.apply(this, arguments);
         }
 
-        ShapeOptionsBuilder.prototype.buildOpts = function(customOpts, forEachOpts) {
+        ShapeOptionsBuilder.prototype.buildOpts = function(customOpts, cachedEval, forEachOpts) {
           var fill, model;
-          model = this.hasModel ? this.scope.model : this.scope;
+          model = this.getCorrectModel(this.scope);
           fill = this.scopeOrModelVal('fill', this.scope, model);
           customOpts = angular.extend(customOpts, {
             fillColor: fill != null ? fill.color : void 0,
             fillOpacity: fill != null ? fill.opacity : void 0
           });
-          return ShapeOptionsBuilder.__super__.buildOpts.call(this, customOpts, forEachOpts);
+          return ShapeOptionsBuilder.__super__.buildOpts.call(this, customOpts, cachedEval, forEachOpts);
         };
 
         return ShapeOptionsBuilder;
@@ -2468,10 +2476,10 @@ Nicholas McCready - https://twitter.com/nmccready
           return PolygonOptionsBuilder.__super__.constructor.apply(this, arguments);
         }
 
-        PolygonOptionsBuilder.prototype.buildOpts = function(pathPoints) {
+        PolygonOptionsBuilder.prototype.buildOpts = function(pathPoints, cachedEval) {
           return PolygonOptionsBuilder.__super__.buildOpts.call(this, {
             path: pathPoints
-          }, {
+          }, cachedEval, {
             geodesic: false
           });
         };
@@ -2490,10 +2498,10 @@ Nicholas McCready - https://twitter.com/nmccready
           return RectangleOptionsBuilder.__super__.constructor.apply(this, arguments);
         }
 
-        RectangleOptionsBuilder.prototype.buildOpts = function(bounds) {
+        RectangleOptionsBuilder.prototype.buildOpts = function(bounds, cachedEval) {
           return RectangleOptionsBuilder.__super__.buildOpts.call(this, {
             bounds: bounds
-          });
+          }, cachedEval);
         };
 
         return RectangleOptionsBuilder;
@@ -2510,11 +2518,11 @@ Nicholas McCready - https://twitter.com/nmccready
           return CircleOptionsBuilder.__super__.constructor.apply(this, arguments);
         }
 
-        CircleOptionsBuilder.prototype.buildOpts = function(center, radius) {
+        CircleOptionsBuilder.prototype.buildOpts = function(center, radius, cachedEval) {
           return CircleOptionsBuilder.__super__.buildOpts.call(this, {
             center: center,
             radius: radius
-          });
+          }, cachedEval);
         };
 
         return CircleOptionsBuilder;
@@ -2598,7 +2606,7 @@ Nicholas McCready - https://twitter.com/nmccready
             };
             create = (function(_this) {
               return function() {
-                var pathPoints;
+                var maybeCachedEval, pathPoints;
                 if (_this.isDragging) {
                   return;
                 }
@@ -2607,7 +2615,7 @@ Nicholas McCready - https://twitter.com/nmccready
                   _this.clean();
                 }
                 if (pathPoints.length > 0) {
-                  _this.gObject = gFactory(_this.buildOpts(pathPoints));
+                  _this.gObject = gFactory(_this.buildOpts(pathPoints, maybeCachedEval = scope.model));
                 }
                 if (_this.gObject) {
                   if (_this.scope.fit) {
