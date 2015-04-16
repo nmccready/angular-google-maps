@@ -49,6 +49,7 @@
                     <th>Static</th>
                     <th>Editable</th>
                     <th>draggable</th>
+                    <th>visible</th>
                     <th>Path</th>
                 </tr>
                 <tr>
@@ -60,6 +61,9 @@
                     </td>
                     <td>
                         <input type="text" ng-model="p.draggable"/>
+                    </td>
+                    <td>
+                        <input type="text" ng-model="p.visible"/>
                     </td>
                     <td>
                         <table>
@@ -82,6 +86,7 @@
             static: {{p.static}}
             editable: {{p.editable}}
             draggable: {{p.draggable}}
+            draggable: {{p.visible}}
             path: {{p.path}}
         </div>
     </div>
@@ -89,5 +94,3 @@
 </body>
 
 </html>
-
-

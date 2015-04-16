@@ -1,4 +1,4 @@
-/*! angular-google-maps 2.0.19 2015-04-01
+/*! angular-google-maps 2.0.19 2015-04-14
  *  AngularJS directives for Google Maps
  *  git: https://github.com/angular-ui/angular-google-maps.git
  */
@@ -3726,11 +3726,13 @@ Original idea from: http://stackoverflow.com/questions/22758950/google-map-drawi
             this.createAllNew = bind(this.createAllNew, this);
             this.watchIdKey = bind(this.watchIdKey, this);
             this.createChildScopes = bind(this.createChildScopes, this);
+            this.watchOurScope = bind(this.watchOurScope, this);
             this.watchDestroy = bind(this.watchDestroy, this);
             this.onDestroy = bind(this.onDestroy, this);
             this.rebuildAll = bind(this.rebuildAll, this);
             this.doINeedToWipe = bind(this.doINeedToWipe, this);
             this.watchModels = bind(this.watchModels, this);
+            this.watch = bind(this.watch, this);
             BasePolysParentModel.__super__.constructor.call(this, scope);
             this["interface"] = IPoly;
             this.$log = $log;
@@ -3745,6 +3747,26 @@ Original idea from: http://stackoverflow.com/questions/22758950/google-map-drawi
             this.$log.info(this);
             this.createChildScopes();
           }
+
+          BasePolysParentModel.prototype.watch = function(scope, name, nameKey) {
+            return scope.$watch(name, (function(_this) {
+              return function(newValue, oldValue) {
+                var maybeCanceled;
+                if (newValue !== oldValue) {
+                  maybeCanceled = null;
+                  _this[nameKey] = _.isFunction(newValue) ? newValue() : newValue;
+                  return _async.promiseLock(_this, uiGmapPromise.promiseTypes.update, "watch " + name + " " + nameKey, (function(canceledMsg) {
+                    return maybeCanceled = canceledMsg;
+                  }), function() {
+                    return _async.each(_this.plurals.values(), function(model) {
+                      model.scope[name] = _this[nameKey] === 'self' ? model : model[_this[nameKey]];
+                      return maybeCanceled;
+                    }, _async.chunkSizeFrom(scope.chunk));
+                  });
+                }
+              };
+            })(this));
+          };
 
           BasePolysParentModel.prototype.watchModels = function(scope) {
             return scope.$watchCollection('models', (function(_this) {
@@ -3794,6 +3816,26 @@ Original idea from: http://stackoverflow.com/questions/22758950/google-map-drawi
             return scope.$on('$destroy', (function(_this) {
               return function() {
                 return _this.rebuildAll(scope, false, true);
+              };
+            })(this));
+          };
+
+          BasePolysParentModel.prototype.watchOurScope = function(scope) {
+            var canCall;
+            canCall = function(maybeCall) {
+              var hasZeroArgs;
+              if (!_.isFunction(maybeCall)) {
+                return false;
+              }
+              hasZeroArgs = !maybeCall.length;
+              return hasZeroArgs;
+            };
+            return _.each(IPoly.scopeKeys, (function(_this) {
+              return function(name) {
+                var nameKey;
+                nameKey = name + 'Key';
+                _this[nameKey] = canCall(scope[name]) ? scope[name]() : scope[name];
+                return _this.watch(scope, name, nameKey);
               };
             })(this));
           };
