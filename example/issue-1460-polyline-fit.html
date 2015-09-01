@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org/" ng-app="appMaps">
+
+<head>
+  <meta charset="utf-8" />
+  <title>AngularJS Plunker</title>
+  <script src="../bower_components/angular/angular.js"></script>
+  <script src="../bower_components/lodash/lodash.js"></script>
+  <script type='text/javascript' src="../dist/angular-google-maps_dev_mapped.js"></script>
+  <script>
+    angular.module('appMaps', ['uiGmapgoogle-maps'])
+      .controller('mainCtrl', function($scope) {
+        $scope.map = {
+          center: {
+            latitude: 0,
+            longitude: 0
+          },
+          zoom: 8,
+          bounds: {}
+        };
+        $scope.paths = [
+          [
+            {latitude: 45, longitude: -74},
+            {latitude: 30, longitude: -89},
+            {latitude: 37, longitude: -122},
+            {latitude: 60, longitude: -95}
+          ],
+         [
+           {latitude: 44, longitude: -72 },
+           { latitude: 20, longitude: -100 }
+         ],
+         [
+           { latitude: 10, longitude: -10 },
+           { latitude: 30, longitude: -50 },
+         ]
+       ];
+      });
+  </script>
+  <style type="text/css">
+    html,
+    body,
+    #map_canvas {
+      height: 100%;
+      width: 100%;
+      margin: 0px;
+    }
+
+    #map_canvas {
+      position: relative;
+    }
+
+    .angular-google-map-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      left: 0;
+    }
+
+    .buttons {
+      position: absolute;
+      z-index: 10;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="map_canvas" ng-controller="mainCtrl as main">
+    <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" options="options" bounds="map.bounds">
+      <ui-gmap-polyline group="'1'" ng-repeat="p in paths" path="p" fit="true"></ui-gmap-polyline>
+    </ui-gmap-google-map>
+  </div>
+</body>
+
+</html>

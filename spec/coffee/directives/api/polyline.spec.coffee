@@ -9,7 +9,7 @@ describe 'uiGmapPolyline', ->
       Polyline.resetInstances()
 
     @injects.push (uiGmapPolyline) =>
-        @subject = uiGmapPolyline
+      @subject = uiGmapPolyline
 
     @injectAll()
 
@@ -28,13 +28,10 @@ describe 'uiGmapPolyline', ->
         toPush = {}
         toPush.id = 0
         toPush.path = [
-          {latitude:47
-          longitude: -27},
-          {latitude:57
-          longitude: -37}
+          {latitude: 47, longitude: -27},
+          {latitude: 57, longitude: -37}
         ]
         @scope.items = [toPush]
-
 
       expect(Polyline.instances).toEqual(1)
 
@@ -52,10 +49,8 @@ describe 'uiGmapPolyline', ->
       toPush = {}
       toPush.id = 0
       toPush.path = [
-        {latitude:47
-        longitude: -27},
-        {latitude:57
-        longitude: -37}
+        {latitude: 47,longitude: -27},
+        {latitude: 57,longitude: -37}
       ]
       @scope.items = []
       @digest =>

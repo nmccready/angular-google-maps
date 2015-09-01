@@ -32,8 +32,10 @@ angular.module('uiGmapgoogle-maps.directives.api')
                 @pathPoints = pathPoints
                 gObjectChangeCb() if gObjectChangeCb?
               if angular.isDefined(@scope.events) and angular.isObject @scope.events
-                @listeners = if @model then EventsHelper.setEvents @gObject, @scope, @model else EventsHelper.setEvents @gObject, @scope, @scope
-              @internalListeners = if @model then EventsHelper.setEvents @gObject, events: @internalEvents, @model else EventsHelper.setEvents @gObject, events: @internalEvents, @scope
+                @listeners = if @model then EventsHelper.setEvents @gObject, @scope, @model \
+                else EventsHelper.setEvents @gObject, @scope, @scope
+              @internalListeners = if @model then EventsHelper.setEvents @gObject, events: @internalEvents, @model \
+              else EventsHelper.setEvents @gObject, events: @internalEvents, @scope
 
           create() #handle stuff without being dependent on digests (ie using watches for init)
 

@@ -4,7 +4,9 @@ angular.module('uiGmapgoogle-maps.directives.api')
   (IPolygon, $timeout, PolygonChild) ->
     class Polygon extends IPolygon
       link: (scope, element, attrs, mapCtrl) =>
-        children = []
+        children = {}
+        scope.$on 'destroy', ->
+          delete children scope.$id
         promise = IPolygon.mapPromise(scope, mapCtrl)
         if scope.control?
           scope.control.getInstance = @
@@ -12,5 +14,5 @@ angular.module('uiGmapgoogle-maps.directives.api')
           scope.control.promise = promise
 
         promise.then (map) =>
-          children.push new PolygonChild scope, attrs, map, @DEFAULTS
+          children[scope.id] = new PolygonChild scope, attrs, map, @DEFAULTS
 ]
