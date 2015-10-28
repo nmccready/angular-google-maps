@@ -6998,10 +6998,7 @@ Original idea from: http://stackoverflow.com/questions/22758950/google-map-drawi
 
         Polygon.prototype.link = function(scope, element, attrs, mapCtrl) {
           var children, promise;
-          children = {};
-          scope.$on('destroy', function() {
-            return delete children(scope.$id);
-          });
+          children = [];
           promise = IPolygon.mapPromise(scope, mapCtrl);
           if (scope.control != null) {
             scope.control.getInstance = this;
@@ -7010,7 +7007,7 @@ Original idea from: http://stackoverflow.com/questions/22758950/google-map-drawi
           }
           return promise.then((function(_this) {
             return function(map) {
-              return children[scope.id] = new PolygonChild(scope, attrs, map, _this.DEFAULTS);
+              return children.push(new PolygonChild(scope, attrs, map, _this.DEFAULTS));
             };
           })(this));
         };
@@ -7067,9 +7064,8 @@ Original idea from: http://stackoverflow.com/questions/22758950/google-map-drawi
     hasProp = {}.hasOwnProperty;
 
   angular.module('uiGmapgoogle-maps.directives.api').factory('uiGmapPolyline', [
-    'uiGmapIPolyline', '$timeout', 'uiGmapPolylineChildModel', 'uiGmapFitHelper', function(IPolyline, $timeout, PolylineChildModel, FitHelper) {
-      var Polyline, _children;
-      _children = {};
+    'uiGmapIPolyline', '$timeout', 'uiGmapPolylineChildModel', function(IPolyline, $timeout, PolylineChildModel) {
+      var Polyline;
       return Polyline = (function(superClass) {
         extend(Polyline, superClass);
 
@@ -7078,48 +7074,13 @@ Original idea from: http://stackoverflow.com/questions/22758950/google-map-drawi
           return Polyline.__super__.constructor.apply(this, arguments);
         }
 
-        Polyline.scope = _.extend(IPolyline.scope, {
-          group: '=?'
-        });
-
         Polyline.prototype.link = function(scope, element, attrs, mapCtrl) {
-          var _maybeFit;
-          scope.$on('destroy', function() {
-            if (scope.group == null) {
-              return;
-            }
-            return delete _children[scope.group](scope.$id);
-          });
-          _maybeFit = (function(_this) {
-            return function(map) {
-              var pathPoints;
-              if (!scope.fit) {
-                return;
-              }
-              if (!scope.group) {
-                return _this.$log.error('cannot fit without a group');
-              }
-              pathPoints = _.map(_children[scope.group], function(child) {
-                return child.pathPoints.getArray();
-              });
-              pathPoints = _.flatten(pathPoints);
-              return FitHelper.fit(pathPoints, map);
-            };
-          })(this);
           return IPolyline.mapPromise(scope, mapCtrl).then((function(_this) {
             return function(map) {
-              var child;
               if (angular.isUndefined(scope.path) || scope.path === null || !_this.validatePath(scope.path)) {
                 _this.$log.warn('polyline: no valid path attribute found');
               }
-              child = new PolylineChildModel(scope, attrs, map, _this.DEFAULTS);
-              if (scope.group != null) {
-                if (_children[scope.group] == null) {
-                  _children[scope.group] = {};
-                }
-                _children[scope.group][scope.$id] = child;
-              }
-              return _maybeFit(map);
+              return new PolylineChildModel(scope, attrs, map, _this.DEFAULTS);
             };
           })(this));
         };
