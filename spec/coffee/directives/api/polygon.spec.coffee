@@ -89,19 +89,22 @@ describe "uiGmapPolygon", ->
 
   it "created a single instance", (done) ->
 
-    @digest =>
+    @digest()
     @scope.map.polygon.control.promise.then =>
-      expect(@scope.map.polygon.control.polygons.length).toBe(1)
+      # console.log @scope.map.polygon.control
+      expect(Object.keys(@scope.map.polygon.control.polygons).length).toBe(1)
       done()
     @digest()
-    
+
     @log.error.calls.reset()
 
   it "created 3 listeners", (done) ->
 
     @digest()
     @scope.map.polygon.control.promise.then =>
-      expect(@scope.map.polygon.control.polygons[0].listeners.length).toBe 3
+      id = _.first(_.keys(@scope.map.polygon.control.polygons))
+      gObject = @scope.map.polygon.control.polygons[id]
+      expect(gObject.listeners.length).toBe 3
       done()
     @digest()
     @log.error.calls.reset()

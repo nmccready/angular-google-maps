@@ -1,4 +1,4 @@
-/*! angular-google-maps 2.2.1 2015-10-23
+/*! angular-google-maps 2.2.1 2015-10-28
  *  AngularJS directives for Google Maps
  *  git: https://github.com/angular-ui/angular-google-maps.git
  */
@@ -7010,7 +7010,7 @@ Original idea from: http://stackoverflow.com/questions/22758950/google-map-drawi
           }
           return promise.then((function(_this) {
             return function(map) {
-              return children[scope.id] = new PolygonChild(scope, attrs, map, _this.DEFAULTS);
+              return children[scope.$id] = new PolygonChild(scope, attrs, map, _this.DEFAULTS);
             };
           })(this));
         };

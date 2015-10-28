@@ -14,5 +14,5 @@ angular.module('uiGmapgoogle-maps.directives.api')
           scope.control.promise = promise
 
         promise.then (map) =>
-          children[scope.id] = new PolygonChild scope, attrs, map, @DEFAULTS
+          children[scope.$id] = new PolygonChild scope, attrs, map, @DEFAULTS
 ]
