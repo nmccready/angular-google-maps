@@ -1,4 +1,4 @@
-/*! angular-google-maps 2.1.6 2015-08-31
+/*! angular-google-maps 2.2.1 2015-10-23
  *  AngularJS directives for Google Maps
  *  git: https://github.com/angular-ui/angular-google-maps.git
  */
@@ -38,7 +38,7 @@ Nicholas McCready - https://twitter.com/nmccready
  */
 
 (function() {
-  angular.module('uiGmapgoogle-maps.providers', []);
+  angular.module('uiGmapgoogle-maps.providers', ['nemLogging']);
 
   angular.module('uiGmapgoogle-maps.wrapped', []);
 
@@ -64,6 +64,7 @@ Nicholas McCready - https://twitter.com/nmccready
 ;angular.module('uiGmapgoogle-maps.wrapped')
 .service('uiGmapuuid', function() {
   //BEGIN REPLACE
+  /* istanbul ignore next */
   /*
  Version: core-1.0
  The MIT License: Copyright (c) 2012 LiosK.
@@ -90,7 +91,7 @@ return UUID;
         }
       };
       includeScript = function(options) {
-        var omitOptions, query, script;
+        var omitOptions, query, script, scriptElem;
         omitOptions = ['transport', 'isGoogleMapsForWork', 'china'];
         if (options.isGoogleMapsForWork) {
           omitOptions.push('key');
@@ -99,7 +100,8 @@ return UUID;
           return k + '=' + v;
         });
         if (scriptId) {
-          document.getElementById(scriptId).remove();
+          scriptElem = document.getElementById(scriptId);
+          scriptElem.parentNode.removeChild(scriptElem);
         }
         query = query.join('&');
         script = document.createElement('script');
@@ -163,65 +165,8 @@ return UUID;
 }).call(this);
 ;(function() {
   angular.module('uiGmapgoogle-maps.directives.api.utils').service('uiGmapLogger', [
-    '$log', function($log) {
-      var LEVELS, Logger, log, maybeExecLevel;
-      LEVELS = {
-        log: 1,
-        info: 2,
-        debug: 3,
-        warn: 4,
-        error: 5,
-        none: 6
-      };
-      maybeExecLevel = function(level, current, fn) {
-        if (level >= current) {
-          return fn();
-        }
-      };
-      log = function(logLevelFnName, msg) {
-        if ($log != null) {
-          return $log[logLevelFnName](msg);
-        } else {
-          return console[logLevelFnName](msg);
-        }
-      };
-      Logger = (function() {
-        function Logger() {
-          var logFns;
-          this.doLog = true;
-          logFns = {};
-          ['log', 'info', 'debug', 'warn', 'error'].forEach((function(_this) {
-            return function(level) {
-              return logFns[level] = function(msg) {
-                if (_this.doLog) {
-                  return maybeExecLevel(LEVELS[level], _this.currentLevel, function() {
-                    return log(level, msg);
-                  });
-                }
-              };
-            };
-          })(this));
-          this.LEVELS = LEVELS;
-          this.currentLevel = LEVELS.error;
-          this.log = logFns['log'];
-          this.info = logFns['info'];
-          this.debug = logFns['debug'];
-          this.warn = logFns['warn'];
-          this.error = logFns['error'];
-        }
-
-        Logger.prototype.spawn = function() {
-          return new Logger();
-        };
-
-        Logger.prototype.setLog = function(someLogger) {
-          return $log = someLogger;
-        };
-
-        return Logger;
-
-      })();
-      return new Logger();
+    'nemSimpleLogger', function(nemSimpleLogger) {
+      return nemSimpleLogger.spawn();
     }
   ]);
 

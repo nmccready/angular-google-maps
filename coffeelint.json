@@ -18,7 +18,7 @@
     },
     "max_line_length": {
         "name": "max_line_length",
-        "value": 125,
+        "value": 256,
         "level": "warn",
         "limitComments": true
     },
@@ -42,7 +42,7 @@
     },
     "colon_assignment_spacing": {
         "name": "colon_assignment_spacing",
-        "level": "warn",
+        "level": "ignore",
         "spacing": {
             "left": 0,
             "right": 1
@@ -59,7 +59,7 @@
     },
     "no_throwing_strings": {
         "name": "no_throwing_strings",
-        "level": "error"
+        "level": "ignore"
     },
     "no_backticks": {
         "name": "no_backticks",
