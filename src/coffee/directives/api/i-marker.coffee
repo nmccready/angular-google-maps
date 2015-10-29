@@ -12,6 +12,7 @@ angular.module('uiGmapgoogle-maps.directives.api')
         fit: '=fit'
         idKey: '=idkey'
         control: '=control'
+        group: '=?'
 
       IMarker.scopeKeys = _.keys(IMarker.scope)
       IMarker.keys = IMarker.scopeKeys

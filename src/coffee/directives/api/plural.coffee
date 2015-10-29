@@ -1,5 +1,5 @@
 angular.module('uiGmapgoogle-maps.directives.api')
-.service 'uiGmapPlural', [->
+.service 'uiGmapPlural', [ ->
   _initControl = (scope, parent) ->
     return unless scope.control?
 

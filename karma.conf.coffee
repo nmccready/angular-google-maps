@@ -13,7 +13,8 @@ module.exports = (config) ->
     preprocessors: {
       # 'spec/**/*.coffee': ['coffee']
       'spec/**/**/*.coffee': ['coffee']
-      'dist/angular-google-maps.js': ['coverage']
+      'tmp/src/w*.js': ['coverage']
+      'tmp/src/coffee/**/*.js': ['coverage']
     }
 
     coverageReporter:
@@ -28,11 +29,18 @@ module.exports = (config) ->
       'bower_components/angular/angular.js'
       'bower_components/angular-mocks/angular-mocks.js'
       'bower_components/angular-simple-logger/dist/angular-simple-logger.min.js'
-      'dist/angular-google-maps.js'
+      # 'dist/angular-google-maps.js'
+      'tmp/src/coffee/module.js'
+      'tmp/src/coffee/providers/*.js'
+      'tmp/w*.js'
+      'src/js/extensions/markerclusterer.js'
+      'tmp/src/coffee/directives/api/utils/*.js'
+      'tmp/src/coffee/**/*.js'
+
       'spec/coffee/bootstrap/bootstrap.coffee'
       'spec/coffee/bootstrap/google-api-mock.coffee'
       'spec/coffee/bootstrap/initiator.coffee'
-
+      # 'spec/coffee/directives/api/singular.spec.coffee'
       'spec/coffee/**/*.spec.coffee'
       # 'spec/**/*.spec.coffee'
       # 'spec/**/*.spec.js'

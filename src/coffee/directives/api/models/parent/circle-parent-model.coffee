@@ -80,7 +80,7 @@ angular.module('uiGmapgoogle-maps.directives.api.models.parent')
               scope.center.longitude = gObject.getCenter().lng()
 
 
-      scope.$on '$destroy', =>
+      scope.$on '$destroy', ->
         clean()
         gObject.setMap null
 

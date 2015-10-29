@@ -1,18 +1,29 @@
 angular.module('uiGmapgoogle-maps.directives.api')
 .factory 'uiGmapPolygon', [
-  'uiGmapIPolygon', '$timeout', 'uiGmapPolygonChildModel'
-  (IPolygon, $timeout, PolygonChild) ->
+  'uiGmapIPolygon', '$timeout', 'uiGmapPolygonChildModel', 'uiGmapFitHelper', 'uiGmapSingular'
+  (IPolygon, $timeout, PolygonChild, FitHelper, Singular) ->
+    _singular = new Singular()
+
     class Polygon extends IPolygon
+
+      @scope = _.extend IPolygon.scope,
+        group: '=?'
+
       link: (scope, element, attrs, mapCtrl) =>
-        children = {}
-        scope.$on 'destroy', ->
-          delete children scope.$id
         promise = IPolygon.mapPromise(scope, mapCtrl)
-        if scope.control?
-          scope.control.getInstance = @
-          scope.control.polygons = children
-          scope.control.promise = promise
+
+        _singular.link(scope)
 
         promise.then (map) =>
-          children[scope.$id] = new PolygonChild scope, attrs, map, @DEFAULTS
+          child = new PolygonChild scope, attrs, map, @DEFAULTS
+          children = _singular.addChild(scope, child)
+
+          #backwards compat
+          #TODO remove deprecated
+          if scope.control?
+            scope.control.getInstance = @
+            scope.control.polygons = children
+            scope.control.promise = promise
+
+          FitHelper.maybeFit(map, children, scope)
 ]
