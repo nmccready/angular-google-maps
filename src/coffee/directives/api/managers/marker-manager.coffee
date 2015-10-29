@@ -35,7 +35,7 @@ angular.module("uiGmapgoogle-maps.directives.api.managers")
       if @gMarkers.get gMarker.key
         @gMarkers.remove gMarker.key
 
-    removeMany: (gMarkers)=>
+    removeMany: (gMarkers) =>
       gMarkers.forEach (marker) =>
         @remove(marker)
 

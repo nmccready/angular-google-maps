@@ -99,7 +99,7 @@ angular.module('uiGmapgoogle-maps.directives.api.models.parent')
             @removeEvents listeners if listeners?
             listeners = @setEvents gObject, @scope, @scope
       # Remove gObject on scope $destroy
-      @scope.$on '$destroy', =>
+      @scope.$on '$destroy', ->
         clear()
 
       $log.info @

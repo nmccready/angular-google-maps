@@ -1,19 +1,24 @@
 angular.module('uiGmapgoogle-maps.directives.api.models.parent')
 .factory 'uiGmapCircleParentModel',
 ['uiGmapLogger', '$timeout','uiGmapGmapUtil',
-'uiGmapEventsHelper', 'uiGmapCircleOptionsBuilder',
-($log, $timeout, GmapUtil, EventsHelper, Builder) ->
+'uiGmapEventsHelper', 'uiGmapCircleOptionsBuilder', 'uiGmapSingular', 'uiGmapFitHelper',
+($log, $timeout, GmapUtil, EventsHelper, Builder, Singular, FitHelper) ->
   _settingFromDirective = (scope, fn) ->
     scope.settingFromDirective = true
     fn()
     $timeout ->
       scope.settingFromDirective = false
 
+  _singular = new Singular()
+
   class CircleParentModel extends Builder
     @include GmapUtil
     @include EventsHelper
     constructor: (scope, element, @attrs, @map, @DEFAULTS) ->
       @scope = scope
+      _singular.link(scope)
+
+
       lastRadius = null
       clean = =>
         lastRadius = null
@@ -21,8 +26,19 @@ angular.module('uiGmapgoogle-maps.directives.api.models.parent')
           @removeEvents @listeners
           @listeners = undefined
 
+
+
       gObject =
         new google.maps.Circle @buildOpts GmapUtil.getCoords(scope.center), scope.radius
+
+      @gObject = gObject
+
+      #makes the interface for fitting identical to polyline/polygon
+      @getPoints = ->
+        bounds = gObject.getBounds()
+        [bounds.getNorthEast(), bounds.getSouthWest()]
+
+      FitHelper.maybeFit(@map, _singular.addChild(scope, @), scope)
 
       @setMyOptions = (newVals, oldVals) =>
         return if scope.settingFromDirective

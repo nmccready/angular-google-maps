@@ -19,6 +19,7 @@ angular.module('uiGmapgoogle-maps.directives.api')
             dragstart: =>
               @isDragging = true
 
+
           create = =>
             return if @isDragging #avoid unnecessary creation (be nice if we knew we were editing too)
             @pathPoints = @convertPathPoints @scope.path
@@ -103,6 +104,9 @@ angular.module('uiGmapgoogle-maps.directives.api')
           if angular.isDefined @scope.zIndex
             @scope.$watch 'zIndex', (newValue, oldValue) =>
               @gObject.setOptions @buildOpts(@gObject.getPath()) if newValue isnt oldValue
+
+        getPoints: =>
+          @pathPoints.getArray()
 
         clean: =>
           EventsHelper.removeEvents @listeners

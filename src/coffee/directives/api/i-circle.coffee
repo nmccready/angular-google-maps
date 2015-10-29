@@ -18,4 +18,5 @@ angular.module('uiGmapgoogle-maps.directives.api').service 'uiGmapICircle', [ ->
     control: '='
     zIndex: '=zindex'
     group: '=?'
+    fit: '=?'
 ]

@@ -64,6 +64,8 @@ angular.module('uiGmapgoogle-maps.directives.api.models.child')
         @createMarker @model
         $log.info @
 
+      getPoints: ->
+        [@gObject.getPosition()]
 
       destroy: (removeFromManager = true) =>
         @removeFromManager = removeFromManager
@@ -201,7 +203,7 @@ angular.module('uiGmapgoogle-maps.directives.api.models.child')
             $log.debug 'gObject has no map yet'
             @deferred.resolve @gObject
 
-        if @model[@fitKey]
+        if @model[@fitKey] and !@scope.fit
           @gManager.fit()
 
       setLabelOptions: (opts) =>

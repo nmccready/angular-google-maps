@@ -81,26 +81,6 @@ angular.module("angular-google-maps-example", ['uiGmapgoogle-maps']).value("rndA
     }
   });
 
-//  _.each($scope.map.markers, function (marker) {
-//    marker.closeClick = function () {
-//      marker.showWindow = false;
-//      $scope.$apply();
-//    };
-//    marker.onClicked = function () {
-//      $scope.onMarkerClicked(marker);
-//    };
-//  });
-//
-//  _.each($scope.map.markers2, function (marker) {
-//    marker.closeClick = function () {
-//      marker.showWindow = false;
-//      $scope.$apply();
-//    };
-//    marker.onClicked = function () {
-//      $scope.onMarkerClicked(marker);
-//    };
-//  });
-
   $scope.removeMarkers = function () {
     $log.info("Clearing markers. They should disappear from the map now");
     $scope.map.markers.length = 0;

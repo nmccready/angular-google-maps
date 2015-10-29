@@ -15,7 +15,7 @@ angular.module('uiGmapgoogle-maps.directives.api.utils')
     return if !scope.fit
     return $log.error 'cannot fit if scope is undefined' if !scope
     pathPoints = _.map children, (child) ->
-      child.pathPoints.getArray()
+      child.getPoints()
     pathPoints = _.flatten pathPoints
     @fit pathPoints, map
 
